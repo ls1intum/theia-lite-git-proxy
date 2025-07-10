@@ -1,0 +1,13 @@
+name: Build Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    uses: ls1intum/.github/.github/workflows/build-and-push-docker-image.yml@v1.1.0
