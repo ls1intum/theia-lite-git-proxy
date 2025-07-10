@@ -1,10 +1,73 @@
 # @isomorphic-git/cors-proxy
 
-This is the software running on https://cors.isomorphic-git.org/ -
+## Helm Deployment
+
+This repository includes a Helm chart for easy deployment to Kubernetes clusters. The chart is located in the `helm/git-proxy` directory.
+
+### Quick Start
+
+1. Configure your values:
+
+   ```bash
+   # Copy the default values file
+   cp helm/git-proxy/values.yaml my-values.yaml
+   ```
+
+2. Edit `my-values.yaml` to set your configuration:
+
+   ```yaml
+   image:
+     repository: ghcr.io/ls1intum/theia-lite-git-proxy
+     tag: "latest"
+     pullPolicy: Always
+
+   ingress:
+     enabled: true
+     className: "nginx"
+     annotations:
+       kubernetes.io/ingress.class: "nginx"
+       cert-manager.io/cluster-issuer: "letsencrypt-prod"
+     hosts:
+       - host: git-proxy.theia.artemis.cit.tum.de
+         paths:
+           - path: /
+             pathType: Prefix
+     tls:
+       - secretName: git-proxy-tls
+         hosts:
+           - git-proxy.theia.artemis.cit.tum.de
+   ```
+
+3. Deploy the chart:
+
+   ```bash
+   helm install git-proxy ./helm/git-proxy -f my-values.yaml --namespace your-namespace
+   ```
+
+### Configuration Options
+
+Key parameters in `values.yaml`:
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `image.repository` | Image repository | `ghcr.io/ls1intum/theia-lite-git-proxy` |
+| `image.tag` | Image tag | `latest` |
+| `image.pullPolicy` | Image pull policy | `Always` |
+| `ingress.enabled` | Enable ingress | `true` |
+| `ingress.className` | Ingress class name | `nginx` |
+| `ingress.annotations` | Ingress annotations | See values.yaml for defaults |
+| `service.port` | Service port | `80` |
+| `service.targetPort` | Container port | `9999` |
+| `resources.limits` | Resource limits | `cpu: 500m, memory: 512Mi` |
+| `resources.requests` | Resource requests | `cpu: 100m, memory: 128Mi` |
+
+---
+
+This is the software running on [cors.isomorphic-git.org](https://cors.isomorphic-git.org/) -
 a free service (generously sponsored by [Clever Cloud](https://www.clever-cloud.com/?utm_source=ref&utm_medium=link&utm_campaign=isomorphic-git))
 for users of [isomorphic-git](https://isomorphic-git.org) that enables cloning and pushing repos in the browser.
 
-It is derived from https://github.com/wmhilton/cors-buster with added restrictions to reduce the opportunity to abuse the proxy.
+It is derived from [cors-buster](https://github.com/wmhilton/cors-buster) with added restrictions to reduce the opportunity to abuse the proxy.
 Namely, it blocks requests that don't look like valid git requests.
 
 ## Installation
