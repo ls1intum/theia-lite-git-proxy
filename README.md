@@ -41,7 +41,7 @@ This repository includes a Helm chart for easy deployment to Kubernetes clusters
 3. Deploy the chart:
 
    ```bash
-   helm install git-proxy ./helm/git-proxy -f my-values.yaml --namespace your-namespace
+   helm upgrade --install --create-namespace --namepsace git-proxy git-proxy ./helm/git-proxy 
    ```
 
 ### Configuration Options
