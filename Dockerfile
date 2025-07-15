@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:18
 LABEL maintainer "William Hilton <wmhilton@gmail.com>"
 WORKDIR /srv
 COPY . .
